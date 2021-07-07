@@ -6,7 +6,7 @@ before-install:
   - docker build -t helencalhoun/react-test -f ./client/Dockerfile/dev ./client
 
 script:
-  - docker run helencalhoun/react-test npm test -- --coverage
+  - docker run -e CI=true stephengrider/react-test npm test
 
 after_success:
   - docker build -t helencalhoun/multi-client ./client
@@ -20,5 +20,5 @@ after_success:
   - docker push helencalhoun/multi-nginx
   - docker push helencalhoun/multi-server
   - docker push helencalhoun/multi-worker
-  
+
 
