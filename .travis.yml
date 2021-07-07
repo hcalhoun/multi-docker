@@ -1,0 +1,24 @@
+sudo: required
+services:
+  - docker
+
+before-install:
+  - docker build -t helencalhoun/react-test -f ./client/Dockerfile/dev ./client
+
+script:
+  - docker run helencalhoun/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t helencalhoun/multi-client ./client
+  - docker build -t helencalhoun/multi-nginx ./nginx
+  - docker build -t helencalhoun/multi-server ./server
+  - docker build -t helencalhoun/multi-worker ./worker
+  # Log in to docker CLI
+  echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Push images to docker hub
+  - docker push helencalhoun/multi-client
+  - docker push helencalhoun/multi-nginx
+  - docker push helencalhoun/multi-server
+  - docker push helencalhoun/multi-worker
+  
+
